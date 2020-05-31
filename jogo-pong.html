@@ -1,0 +1,246 @@
+<html lang="pt-BR">
+	<head>
+		<title>Pong</title>
+		<meta charset="UTF-8">
+	</head>
+	<body>
+
+		<canvas width="800" height="500"></canvas>
+			
+		<style type="text/css">
+
+			canvas{
+				margin-top: 55;
+				margin-left: 250;
+				border-style: solid;
+			}
+		</style>
+
+		<script>
+
+			alert("W e S movem a raquete da esquerda!");
+			alert("Seta up e down movem a raquete da direita!");
+
+			var tela = document.querySelector("canvas");
+			var context = tela.getContext("2d");
+
+			//Variaveis da bola
+			var velocidadeBola = 2;
+			var xBola = 400;
+			var yBola = 250;
+			var raio = 11;
+
+			//Variaveis de verificacao do sentido de movimento da bola
+			var direcaoX = true;
+			var direcaoY = true;
+
+			//Variaveis gerais da raquete
+			var alturaRaquete = 120;
+			var larguraRaquete = 15;
+			var velocidadeRaquete = 4;
+
+			//Variaveis da raquete do jogador um
+			var xRaqueteJogadorUm = 10;
+			var yRaqueteJogadorUm = 200;
+
+			//Variaveis da raquete do jogador dois
+			var xRaqueteJogadorDois = 775;
+			var yRaqueteJogadorDois = 200;
+
+			//Variaveis de controle de tecla do jogador um
+			var cimaJogadorUm;
+			var baixoJogadorUm;
+
+			//Variaveis de controle de tecla do jogador um
+			var cimaJogadorDois;
+			var baixoJogadorDois;
+
+			//Variaveis dos pontos
+			var pontosJogadorUm = 0;
+			var pontosJogadorDois = 0;
+
+			mostraFundo();
+			desenhaBola(xBola, yBola);
+			gameLoop();
+
+			function mostraFundo(){
+
+				context.fillStyle = "79, 79, 79";
+				context.fillRect(0, 0, 800, 500);
+			}
+
+			function desenhaBola(x, y){
+
+				context.fillStyle = "white";
+				context.beginPath();
+				context.arc(x, y, raio, 0, 2 * Math.PI);
+				context.fill();
+			}
+
+			function verificaDirecaoX(){
+
+				if(xBola > 790){
+					direcaoX = false;
+					/*yBola = 250;
+					xBola = 400;*/
+					pontosJogadorUm++;
+				}else if(xBola < 10){
+					direcaoX = true;
+					/*yBola = 250;
+					xBola = 400;*/
+					pontosJogadorDois++;
+				}
+			}
+
+			function verificaDirecaoY(){
+
+				if(yBola > 490){
+					direcaoY = false;
+				}else if(yBola < 10){
+					direcaoY = true;
+				}
+			}
+
+			function limpaTela(){
+
+				context.fillStyle = "#1C1C1C";
+				context.fillRect(0, 0, 800, 500);
+			}
+
+			function desenhaRaquete(x, y){
+
+				context.beginPath();
+				context.fillStyle = "white";
+				context.fillRect(x, y, larguraRaquete, alturaRaquete);
+			}
+
+			function movimentaRaquete(){
+
+				if(yRaqueteJogadorUm > 0){
+					if(cimaJogadorUm == true){
+						yRaqueteJogadorUm -= velocidadeRaquete;
+					}
+				}
+				if(yRaqueteJogadorUm < 380){
+					if(baixoJogadorUm == true){
+						yRaqueteJogadorUm += velocidadeRaquete;
+					}
+				}
+
+				if(yRaqueteJogadorDois > 0){
+					if(cimaJogadorDois == true){
+						yRaqueteJogadorDois -=	velocidadeRaquete;
+					}
+				}
+				if(yRaqueteJogadorDois < 380){
+					if(baixoJogadorDois == true){
+						yRaqueteJogadorDois += velocidadeRaquete;
+					}
+				}
+			}
+
+			function verificaTeclaOn(evento){
+				if(evento.keyCode == 87){
+					cimaJogadorUm = true;
+					baixoJogadorUm = false;
+				}else if(evento.keyCode == 83){
+					baixoJogadorUm = true;
+					cimaJogadorUm = false;
+				}
+
+				if(evento.keyCode == 38){
+					cimaJogadorDois = true;
+					baixoJogadorDois = false;
+				}else if(evento.keyCode == 40){
+					baixoJogadorDois = true;
+					cimaJogadorDois = false;
+				}
+			}
+
+			function verificaTeclaOff(evento){
+
+				if(evento.keyCode == 87){
+					cimaJogadorUm = false
+				}else if(evento.keyCode == 83){
+					baixoJogadorUm = false;
+				}
+
+				if(evento.keyCode == 38){
+					cimaJogadorDois = false
+				}else if(evento.keyCode == 40){
+					baixoJogadorDois = false;
+				}
+			}
+
+			function verificaColisaoRaqueteJogadorUm(){
+
+				
+				if(xBola < 10 + larguraRaquete + raio && yBola - raio < yRaqueteJogadorUm + alturaRaquete && yBola +raio > yRaqueteJogadorUm){
+					direcaoX = true;
+					alteraVelocidadeBola();
+				}
+			}
+
+			function verificaColisaoRaqueteJogadorDois(){
+
+				
+				if(xBola > 790 - larguraRaquete - raio && yBola - raio < yRaqueteJogadorDois + alturaRaquete && yBola + raio > yRaqueteJogadorDois){
+					direcaoX = false;
+					alteraVelocidadeBola();
+				}
+			}
+
+			function mostraPontos(){
+
+				context.font = "42pt Helvetica";
+				context.fillText(pontosJogadorUm, 280, 50);
+
+				context.font = "42pt Helvetica";
+				context.fillText(pontosJogadorDois, 500, 50);
+			}
+
+			function alteraVelocidadeBola(){
+
+				velocidadeBola = 4;
+			}
+
+			//Função que atualiza o jogo a cada 5 milissegundos
+			function gameLoop(){
+				verificaDirecaoX();
+				verificaDirecaoY();
+				limpaTela();
+				
+				if(direcaoX == true){
+					desenhaBola(xBola, yBola);
+					xBola += velocidadeBola;
+				}
+				if(direcaoX == false){
+					desenhaBola(xBola, yBola);
+					xBola -= velocidadeBola;
+				}
+
+				if(direcaoY == true){
+					desenhaBola(xBola, yBola);
+					yBola += velocidadeBola - 2;
+				}
+				if(direcaoY == false){
+					desenhaBola(xBola, yBola);
+					yBola -= velocidadeBola - 2;
+				}
+
+				movimentaRaquete();
+				desenhaRaquete(xRaqueteJogadorUm, yRaqueteJogadorUm);
+				desenhaRaquete(xRaqueteJogadorDois, yRaqueteJogadorDois);
+				verificaColisaoRaqueteJogadorUm();
+				verificaColisaoRaqueteJogadorDois();
+				mostraPontos();
+				
+			}
+
+			document.onkeydown = verificaTeclaOn;
+			document.onkeyup = verificaTeclaOff;
+			setInterval(gameLoop, 5);
+
+		</script>
+	</body>
+</html>
